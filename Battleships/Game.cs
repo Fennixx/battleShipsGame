@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Battleships.Ship;
+using Battleships.Shot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Battleships
@@ -20,7 +23,31 @@ namespace Battleships
         // returns: the number of ships sunk by the set of guesses
         public static int Play(string[] ships, string[] guesses)
         {
-            return 0;
+            var playGround = new IShip[10, 10];
+            IShips myShips = new Ships(ships);
+            var myShots = new Shots(guesses);
+
+            PopulatePlayGround(playGround, myShips.AllShips);
+            myShots.ShootAllShots(playGround);         
+
+            return myShips.CountSunkedShips(myShips.AllShips);
         }
+
+           
+
+        private static void PopulatePlayGround(IShip[,] playGround, List<IShip> allShips)
+        {
+            foreach (var ship in allShips)
+            {
+                for (int x = ship.StartX; x <= ship.EndX; x++)
+                {
+                    for (int y = ship.StartY; y <= ship.EndY; y++)
+                    {
+                        ship.PartsUp++;
+                        playGround[x, y] = ship;
+                    }
+                }
+            }
+        }   
     }
 }
